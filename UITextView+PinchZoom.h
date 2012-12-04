@@ -3,6 +3,7 @@
 //
 //  Created by Stan Serebryakov <cfr@gmx.us> on 04.12.12.
 //
+//  Based on Aral Balkan snippet.
 
 #import <UIKit/UIKit.h>
 
