@@ -9,8 +9,8 @@
 
 @interface UITextView (PinchZoom)
 
-@property CGFloat maxFontSize, minFontSize;
+@property (nonatomic) CGFloat maxFontSize, minFontSize;
 
-@property (getter = isZoomEnabled) BOOL zoomEnabled;
+@property (nonatomic, getter = isZoomEnabled) BOOL zoomEnabled;
 
 @end

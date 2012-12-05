@@ -3,6 +3,8 @@ UITextView+PinchZoom
 
 Simple pinch-zoom category for UITextView.
 
+Code works with and without ARC.
+
 Usage:
 
     #import "UITextView+PinchZoom.h"
@@ -14,4 +16,3 @@ Usage:
     textView.zoomEnabled = YES;
     textView.minFontSize = 10;
     textView.maxFontSize = 40;
-

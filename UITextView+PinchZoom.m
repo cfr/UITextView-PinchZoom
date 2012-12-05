@@ -15,7 +15,8 @@ static int zoomEnabledKey;
 
 - (void)setMaxFontSize:(CGFloat)maxFontSize
 {
-    objc_setAssociatedObject(self, &maxFontSizeKey, [NSNumber numberWithFloat:maxFontSize], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &maxFontSizeKey, [NSNumber numberWithFloat:maxFontSize],
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (CGFloat)maxFontSize
@@ -25,7 +26,8 @@ static int zoomEnabledKey;
 
 - (void)setMinFontSize:(CGFloat)maxFontSize
 {
-    objc_setAssociatedObject(self, &minFontSizeKey, [NSNumber numberWithFloat:maxFontSize], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &minFontSizeKey, [NSNumber numberWithFloat:maxFontSize],
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (CGFloat)minFontSize
@@ -35,29 +37,27 @@ static int zoomEnabledKey;
 
 - (void)pinchGesture:(UIPinchGestureRecognizer *)gestureRecognizer
 {
-    UIFont *font = self.font;
-    CGFloat pointSize = font.pointSize;
-    NSString *fontName = font.fontName;
+    CGFloat pointSize = (gestureRecognizer.velocity > 0.0f ? 1.0f : -1.0f) + self.font.pointSize;
 
-    pointSize = ((gestureRecognizer.velocity > 0) ? 1 : -1) * 1 + pointSize;
+    pointSize = MAX(MIN(pointSize, self.maxFontSize), self.minFontSize);
 
-    pointSize = MIN(pointSize, self.maxFontSize);
-    pointSize = MAX(pointSize, self.minFontSize);
-
-    self.font = [UIFont fontWithName:fontName size:pointSize];
+    self.font = [UIFont fontWithName:self.font.fontName size:pointSize];
 }
 
 
 - (void)setZoomEnabled:(BOOL)zoomEnabled
 {
-    objc_setAssociatedObject(self, &zoomEnabledKey, [NSNumber numberWithBool:zoomEnabled], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &zoomEnabledKey, [NSNumber numberWithBool:zoomEnabled],
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+
     if (zoomEnabled) {
-        self.minFontSize = self.minFontSize ?: 8;
-        self.maxFontSize = self.maxFontSize ?: 42;
-        UIPinchGestureRecognizer *pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGesture:)];
-        [self addGestureRecognizer:pinchGestureRecognizer];
+        self.minFontSize = self.minFontSize ?: 8.0f;
+        self.maxFontSize = self.maxFontSize ?: 42.0f;
+        UIPinchGestureRecognizer *pinchRecognizer = [[UIPinchGestureRecognizer alloc]
+                                                     initWithTarget:self action:@selector(pinchGesture:)];
+        [self addGestureRecognizer:pinchRecognizer];
 #if !__has_feature(objc_arc)
-        [pinchGestureRecognizer release];
+        [pinchRecognizer release];
 #endif
     }
 }
