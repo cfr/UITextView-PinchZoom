@@ -37,6 +37,8 @@ static int zoomEnabledKey;
 
 - (void)pinchGesture:(UIPinchGestureRecognizer *)gestureRecognizer
 {
+    if (!self.isZoomEnabled) return;
+
     CGFloat pointSize = (gestureRecognizer.velocity > 0.0f ? 1.0f : -1.0f) + self.font.pointSize;
 
     pointSize = MAX(MIN(pointSize, self.maxFontSize), self.minFontSize);
@@ -51,6 +53,9 @@ static int zoomEnabledKey;
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 
     if (zoomEnabled) {
+        for (UIGestureRecognizer *recognizer in self.gestureRecognizers) // initialized already
+            if ([recognizer isKindOfClass:[UIPinchGestureRecognizer class]]) return;
+
         self.minFontSize = self.minFontSize ?: 8.0f;
         self.maxFontSize = self.maxFontSize ?: 42.0f;
         UIPinchGestureRecognizer *pinchRecognizer = [[UIPinchGestureRecognizer alloc]
